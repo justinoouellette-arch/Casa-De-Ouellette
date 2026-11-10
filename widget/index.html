@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Casa de Ouellette Widget</title>
+<meta name="theme-color" content="#f7f5ee">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=DM+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: one calm column on the kitchen's cream paper; previews, then numbered install steps, then the script. */
+:root {
+  --cream: #f7f5ee; --card: #fdfcf8; --ink: #2f3a2c; --muted: #6b7064; --olive: #7a8259;
+  --rust: #8a4f35; --line: #dcdccb; --chip: #e8eadc;
+  --serif: "Fraunces", Georgia, "Times New Roman", serif;
+  --sans: "DM Sans", "Helvetica Neue", Arial, system-ui, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--cream); color: var(--ink); font-family: var(--sans); font-size: 17px; line-height: 1.6;
+  padding-top: env(safe-area-inset-top, 0px); padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px));
+  padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+main { max-width: 640px; margin: 0 auto; display: flex; flex-direction: column; gap: 36px; padding-top: 28px; }
+a { color: var(--olive); }
+.brand { display: flex; align-items: center; gap: 14px; text-decoration: none; color: var(--ink); }
+.badge { width: 52px; height: 52px; border: 1.5px solid #a9ae8e; border-radius: 50%; display: grid; place-items: center;
+  font-family: var(--serif); font-size: 26px; font-weight: 500; flex: none; }
+.brand b { display: block; font-family: var(--serif); font-weight: 600; font-size: 1.35rem; line-height: 1.1; }
+.brand small { letter-spacing: .2em; text-transform: uppercase; font-size: .72rem; color: var(--muted); }
+.eyebrow { margin: 0 0 10px; letter-spacing: .2em; text-transform: uppercase; font-size: .78rem; font-weight: 600; color: var(--rust); }
+h1 { font-family: var(--serif); font-weight: 500; font-size: clamp(2.3rem, 9vw, 3.2rem); line-height: 1.02; margin: 0; letter-spacing: -.01em; }
+h1 em { color: var(--olive); }
+h2 { font-family: var(--serif); font-weight: 600; font-size: 1.4rem; margin: 0 0 12px; }
+p { margin: 0; }
+.lede { color: var(--muted); margin-top: 14px; }
+.previews { display: grid; grid-template-columns: 1fr 2.14fr; gap: 12px; align-items: start; }
+.previews img { width: 100%; height: auto; display: block; border-radius: 22px; box-shadow: 0 1px 0 var(--line), 0 10px 30px rgba(47,58,44,.10); }
+.previews .lg { grid-column: 1 / -1; max-width: 340px; justify-self: center; }
+.caption { font-size: .85rem; color: var(--muted); text-align: center; margin-top: 10px; }
+ol.steps { list-style: none; margin: 0; padding: 0; counter-reset: s; display: flex; flex-direction: column; gap: 14px; }
+ol.steps li { counter-increment: s; display: grid; grid-template-columns: 34px 1fr; gap: 12px; align-items: start; }
+ol.steps li::before { content: counter(s); width: 30px; height: 30px; border-radius: 50%; background: var(--chip); color: var(--ink);
+  font-family: var(--serif); font-weight: 600; display: grid; place-items: center; font-size: .95rem; margin-top: 1px; }
+.steps strong { font-weight: 600; }
+.code { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; min-width: 0; }
+.code pre { margin: 0; padding: 16px; overflow-x: auto; font: 12.5px/1.55 ui-monospace, "SF Mono", Menlo, monospace; max-height: 260px; }
+.bar { display: flex; gap: 10px; flex-wrap: wrap; padding: 12px; border-top: 1px solid var(--line); background: var(--cream); }
+.btn { flex: 1 1 160px; min-height: 50px; border-radius: 999px; border: 1.5px solid var(--ink); background: var(--ink); color: var(--cream);
+  font: 600 1rem var(--sans); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; padding: 0 18px; white-space: nowrap; }
+.btn.ghost { background: transparent; color: var(--ink); }
+.btn:focus-visible, a:focus-visible { outline: 3px solid var(--olive); outline-offset: 3px; }
+#status { min-height: 1.4em; font-size: .9rem; color: var(--olive); font-weight: 600; padding: 0 12px 10px; background: var(--cream); }
+#fallback { width: calc(100% - 24px); margin: 0 12px 12px; min-height: 120px; font: 12px ui-monospace, Menlo, monospace; border: 1px solid var(--line); border-radius: 10px; padding: 10px; }
+.note { font-size: .92rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 18px; }
+</style>
+</head>
+<body>
+<main>
+  <a class="brand" href="../"><span class="badge">O.</span><span><b>Casa de Ouellette</b><small>The family kitchen</small></span></a>
+
+  <header>
+    <p class="eyebrow">For your home screen</p>
+    <h1>The kitchen,<br><em>one tap away.</em></h1>
+    <p class="lede">A home screen widget with our logo and the family table. Tap it to open the recipes. It comes in three sizes and takes about two minutes to set up on an iPhone.</p>
+  </header>
+
+  <section aria-label="Widget sizes">
+    <div class="previews">
+      <img src="small.png" alt="Small widget: the O. badge and the plate">
+      <img src="medium.png" alt="Medium widget: the Casa de Ouellette logo beside the plate">
+      <img class="lg" src="large.png" alt="Large widget: the logo above a larger plate">
+    </div>
+    <p class="caption">Small, medium and large</p>
+  </section>
+
+  <section>
+    <h2>Set it up</h2>
+    <ol class="steps">
+      <li><p>Install <strong>Scriptable</strong> from the App Store. It is free, and it is what lets an iPhone show custom widgets.</p></li>
+      <li><p>Tap <strong>Copy the script</strong> below.</p></li>
+      <li><p>Open Scriptable, tap <strong>+</strong>, paste, and name it <strong>Casa de Ouellette</strong>. Tap <strong>Done</strong>.</p></li>
+      <li><p>Long-press your home screen, tap <strong>Edit</strong>, then <strong>Add Widget</strong>. Choose <strong>Scriptable</strong> and pick a size.</p></li>
+      <li><p>Long-press the new widget, tap <strong>Edit Widget</strong>, and set <strong>Script</strong> to Casa de Ouellette.</p></li>
+    </ol>
+  </section>
+
+  <section class="code" aria-label="Widget script">
+    <pre id="script">// Casa de Ouellette — home screen widget for Scriptable.
+// The artwork lives on the website, so updating it there updates every widget.
+const BASE = "https://casa-de-ouellette.netlify.app/";
+const family = config.widgetFamily || "medium";
+const size = family === "small" ? "small" : (family === "large" || family === "extraLarge") ? "large" : "medium";
+
+const fm = FileManager.local();
+const saved = fm.joinPath(fm.documentsDirectory(), "casa-widget-" + size + ".png");
+let art = null;
+try {
+  art = await new Request(BASE + "widget/" + size + ".png").loadImage();
+  fm.writeImage(saved, art);
+} catch (e) {
+  if (fm.fileExists(saved)) art = fm.readImage(saved);
+}
+
+const widget = new ListWidget();
+widget.backgroundColor = new Color("#f7f5ee");
+widget.url = BASE;
+if (art) {
+  widget.backgroundImage = art;
+  widget.addSpacer();
+} else {
+  const t = widget.addText("Casa de Ouellette");
+  t.font = new Font("Georgia-Bold", 16);
+  t.textColor = new Color("#2f3a2c");
+}
+widget.refreshAfterDate = new Date(Date.now() + 6 * 3600 * 1000);
+
+if (config.runsInWidget) Script.setWidget(widget);
+else await widget.presentMedium();
+Script.complete();
+</pre>
+    <div class="bar">
+      <button class="btn" id="copy" type="button">Copy the script</button>
+    </div>
+    <p id="status" role="status"></p>
+    <textarea id="fallback" readonly hidden aria-label="Script text to copy"></textarea>
+  </section>
+
+  <p class="note">The artwork is loaded from this site and saved on the phone, so the widget keeps working offline. If the picture ever changes here, widgets pick it up on their next refresh.</p>
+</main>
+<script>
+// Point the script at wherever this site is hosted, so it works on any address.
+(function () {
+  var pre = document.getElementById('script'), here = new URL('../', location.href).href;
+  if (/^https:/.test(here)) pre.textContent = pre.textContent.replace(/const BASE = "[^"]*";/, 'const BASE = "' + here + '";');
+})();
+document.getElementById('copy').addEventListener('click', function () {
+  var text = document.getElementById('script').textContent, status = document.getElementById('status'), fb = document.getElementById('fallback');
+  function manual() { fb.value = text; fb.hidden = false; fb.focus(); fb.select(); status.textContent = 'Select all the text in the box below and copy it.'; }
+  try { navigator.clipboard.writeText(text).then(function () { status.textContent = 'Copied. Now open Scriptable and paste.'; }).catch(manual); } catch (e) { manual(); }
+});
+</script>
+</body>
+</html>
