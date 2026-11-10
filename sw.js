@@ -1,5 +1,5 @@
 // Offline support: keep a copy of the app; refresh it from the network whenever online.
-const CACHE = 'casa-kitchen-v6';
+const CACHE = 'casa-kitchen-v7';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './favicon.png', './assets/kitchen-table.svg'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => {
