@@ -167,6 +167,9 @@ body { padding:0 32px 50px; font-size:15px; background:var(--desk); }
 .card-body { display:flex;flex-direction:column;justify-content:center;flex:1;padding:18px 38px 20px 20px; }
 .recipe-art { display:block;aspect-ratio:200/100;border-radius:8px;overflow:hidden;border:1px solid var(--rule);background:#f3f0e4; }
 @media(max-width:620px) { .card-body { padding:14px 26px 16px 14px; } .card.has-art::after { bottom:12px;right:10px; } }
+.rows li.section-head { border-bottom:0;padding:16px 2px 6px; }
+.rows li.section-head.thick { border-top:5px solid var(--pen);margin-top:16px;padding-top:14px; }
+.rows li.section-head span { font:700 12px var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--pen); }
 .site-footer { align-items:center; }
 .footer-widget { display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 16px;border:1px solid #ccd3bc;border-radius:999px;background:#f8f9f0;color:var(--pen);font:600 12px var(--body);letter-spacing:.04em;text-decoration:none;white-space:nowrap; }
 .footer-widget:hover { filter:brightness(.95); }
@@ -626,25 +629,45 @@ body { padding:0 32px 50px; font-size:15px; background:var(--desk); }
   }
 
   /* ---- one recipe ---- */
+  // Recipes with more than one option: where each option starts in the ingredients and the directions.
+  var SECTIONS = {
+    'bisquick-pancakes-and-waffles': {
+      ing: { 0: 'Pancakes', 3: 'Ultimate Pancake option: add these to the pancake batter', 7: 'Waffles' },
+      step: { 0: 'Pancakes', 4: 'Waffles' }
+    }
+  };
   var wake = null;
   function releaseWake() { try { if (wake) wake.release(); } catch (e) {} wake = null; }
   function renderRecipe(id) {
     var r = BY[id];
     if (!r) { location.hash = ''; return; }
     var ck = S.checks[r.id] || (S.checks[r.id] = { ing: {}, step: {} });
-    var ing = h('ul', { className: 'rows' }, r.ingredients.map(function (t, i) {
+    var sec = SECTIONS[r.id] || {};
+    function withHeads(list, heads, items) {
+      // A recipe with options gets a labelled divider where each option starts.
+      if (!heads) return;
+      Object.keys(heads).forEach(function (k) {
+        var at = items[Number(k)];
+        if (at) list.insertBefore(h('li', { className: 'section-head' + (Number(k) ? ' thick' : '') }, [h('span', { text: heads[k] })]), at);
+      });
+    }
+    var ingItems = r.ingredients.map(function (t, i) {
       var li = h('li', { className: ck.ing[i] ? 'done' : '' });
       var box = h('input', { type: 'checkbox', id: 'ing-' + i, checked: !!ck.ing[i], on: { change: function () { ck.ing[i] = box.checked; li.className = box.checked ? 'done' : ''; } } });
-      li.appendChild(h('label', { 'for': 'ing-' + i }, [box, h('span', { className: 'txt', text: t })]));
+      li.appendChild(h('label', { 'for': 'ing-' + i }, [box, h('span', { className: 'txt', text: sec.ing ? t.replace(/\s*\([^)]*\)\s*$/, '') : t })]));
       return li;
-    }));
+    });
+    var ing = h('ul', { className: 'rows' }, ingItems);
+    withHeads(ing, sec.ing, ingItems);
+    var stepItems = [];
     var steps = h('ol', { className: 'rows' }, r.steps.map(function (t, i) {
-      var li = h('li', { className: ck.step[i] ? 'done' : '' });
+      var li = h('li', { className: ck.step[i] ? 'done' : '' }); stepItems.push(li);
       var b = h('button', { className: 'step', type: 'button', 'aria-pressed': String(!!ck.step[i]), on: { click: function () {
         ck.step[i] = !ck.step[i]; li.className = ck.step[i] ? 'done' : ''; b.setAttribute('aria-pressed', String(ck.step[i]));
       } } }, [h('span', { className: 'num', text: String(i + 1) }), h('span', { className: 'txt', text: t })]);
       li.appendChild(b); return li;
     }));
+    withHeads(steps, sec.step, stepItems);
 
     // add to this week
     var isDessert = r.course === 'dessert', isSide = r.course === 'side' || r.course === 'extra';
